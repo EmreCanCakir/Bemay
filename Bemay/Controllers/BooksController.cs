@@ -13,16 +13,22 @@ namespace Bemay.Controllers
     public class BooksController : Controller
     {
         private readonly AppDbContext _context;
-
-        public BooksController(AppDbContext context)
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        public BooksController(AppDbContext context, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         // GET: Books
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
             var appDbContext = _context.Books.Include(b => b.Author).Include(b => b.BookCategories).ThenInclude(bc => bc.Category);
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                return View(await appDbContext.Where(b => b.Title.Contains(searchString) || b.Author.FirstName.Contains(searchString) || b.Author.LastName.Contains(searchString)).ToListAsync());
+            }
             return View(await appDbContext.ToListAsync());
         }
 
@@ -65,12 +71,21 @@ namespace Bemay.Controllers
         [HttpPost]
         [Authorize(Policy = "AdminPolicy")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,AuthorId,Price,EditionYear,Language,PageCount, CategoryIds")] Book book, List<int> CategoryIds)
+        public async Task<IActionResult> Create([Bind("Id,Title,AuthorId,Price,EditionYear,Language,PageCount, CategoryIds")] Book book, List<int> CategoryIds, IFormFile Image)
         {
             if (ModelState.IsValid)
             {
                 book.CreatedAt = DateTime.Now;
                 book.UpdatedAt = DateTime.Now;
+
+                if (Image != null && Image.Length > 0)
+                {
+                    using (var ms = new MemoryStream())
+                    {
+                        await Image.CopyToAsync(ms);
+                        book.Image = ms.ToArray();
+                    }
+                }
 
                 _context.Add(book);
                 await _context.SaveChangesAsync();

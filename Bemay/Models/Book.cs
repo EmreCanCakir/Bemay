@@ -21,6 +21,7 @@ namespace Bemay.Models
         public int? PageCount { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
+        public byte[]? Image { get; set; }
         public string? AuthorFullName => Author != null ? $"{Author.FirstName} {Author.LastName}" : "";
     }
 
