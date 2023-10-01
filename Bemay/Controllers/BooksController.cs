@@ -62,10 +62,13 @@ namespace Bemay.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,AuthorId,Price,EditionYear,Language,PageCount,CreatedAt,UpdatedAt, CategoryIds")] Book book, List<int> CategoryIds)
+        public async Task<IActionResult> Create([Bind("Id,Title,AuthorId,Price,EditionYear,Language,PageCount, CategoryIds")] Book book, List<int> CategoryIds)
         {
             if (ModelState.IsValid)
             {
+                book.CreatedAt = DateTime.Now;
+                book.UpdatedAt = DateTime.Now;
+
                 _context.Add(book);
                 await _context.SaveChangesAsync();
 
@@ -125,7 +128,7 @@ namespace Bemay.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,AuthorId,Price,EditionYear,Language,PageCount,CreatedAt,UpdatedAt, CategoryIds")] Book book, List<int> CategoryIds)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,AuthorId,Price,EditionYear,Language,PageCount, CategoryIds")] Book book, List<int> CategoryIds)
         {
             if (id != book.Id)
             {
@@ -135,7 +138,10 @@ namespace Bemay.Controllers
             if (ModelState.IsValid)
             {
                 try
-                {
+                {                    
+                    book.CreatedAt = DateTime.Now;
+                    book.UpdatedAt = DateTime.Now;
+
                     // Update the book properties
                     _context.Update(book);
 
