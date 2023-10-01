@@ -63,11 +63,31 @@ namespace Bemay.Models
                     .HasForeignKey(rc => rc.RoleId)
                     .IsRequired();
             });
+
+            SeedRoles(modelBuilder);
         }
 
         public DbSet<Book> Books { get; set; }
         public DbSet<Author> Authors { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<BookCategory> BookCategories { get; set; }
+
+        private static void SeedRoles(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<ApplicationRole>().HasData(
+                new ApplicationRole
+                {
+                    ConcurrencyStamp = "1",
+                    Name = "Admin",
+                    NormalizedName = "ADMIN"
+                },
+                new ApplicationRole
+                {
+                    ConcurrencyStamp = "2",
+                    Name = "User",
+                    NormalizedName = "USER"
+                }
+            );
+        }
     }
 }

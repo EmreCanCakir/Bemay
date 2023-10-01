@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Bemay.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Bemay.Controllers
 {
@@ -45,6 +46,7 @@ namespace Bemay.Controllers
         }
 
         // GET: Authors/Create
+        [Authorize(Policy = "AdminPolicy")]
         public IActionResult Create()
         {
             return View();
@@ -54,6 +56,7 @@ namespace Bemay.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize(Policy = "AdminPolicy")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,BirthYear")] Author author)
         {
@@ -67,6 +70,7 @@ namespace Bemay.Controllers
         }
 
         // GET: Authors/Edit/5
+        [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Authors == null)
@@ -86,6 +90,7 @@ namespace Bemay.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize(Policy = "AdminPolicy")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,BirthYear")] Author author)
         {
@@ -118,6 +123,7 @@ namespace Bemay.Controllers
         }
 
         // GET: Authors/Delete/5
+        [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Authors == null)
